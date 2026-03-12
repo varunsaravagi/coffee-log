@@ -18,7 +18,9 @@ Use TypeScript with strict typing and functional React components. Follow the ex
 There is no dedicated test runner yet. Before opening a change, run `npm run lint` and `npm run build`. For data-model changes, also verify the SQLite migration path in `lib/db.ts` and manually test the affected flows in the browser, especially bean creation, grinder creation, search, and image upload. When adding automated tests later, place them alongside the feature or under a top-level `tests/` directory with `*.test.ts` naming.
 
 ## Commit & Pull Request Guidelines
-Git history is not available in this workspace, so no repository-specific commit convention can be inferred yet. Use short imperative commit messages such as `Add grinder creation flow` or `Store explicit bean log date`. Pull requests should summarize user-visible changes, list validation steps (`npm run lint`, `npm run build`), and include screenshots for UI updates on both desktop and mobile-width layouts.
+Current history starts with `Initial commit`, so keep using short imperative commit messages such as `Add grinder creation flow` or `Store explicit bean log date`. Keep each commit focused on one change area when possible. Pull requests should summarize user-visible changes, list validation steps (`npm run lint`, `npm run build`), and include screenshots for UI updates on both desktop and mobile-width layouts.
 
 ## Data & Configuration Notes
 Treat `data/coffee-log.sqlite` and `data/uploads/` as local development state, not source files. Avoid committing personal coffee logs or uploaded photos. If configuration expands later, document new environment variables near the feature that requires them.
+
+The Git remote is configured for GitHub; use the normal flow `git add .`, `git commit -m "..."`, and `git push` from the repository root.
