@@ -24,6 +24,23 @@ npm run build
 npm run start
 ```
 
+## Deployment Update
+If the app is running under `systemd`, use the helper script below on the Pi to pull the latest code, install dependencies, rebuild, and restart the service:
+
+```bash
+./update-deployment.sh
+```
+
+Defaults:
+- Git branch: `main`
+- service name: `coffee-log`
+
+You can override them if needed:
+
+```bash
+BRANCH_NAME=main SERVICE_NAME=coffee-log ./update-deployment.sh
+```
+
 ## Notes
 - Local SQLite data is stored under `data/`
 - Uploaded images are stored under `data/uploads/`
