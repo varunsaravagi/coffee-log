@@ -16,7 +16,7 @@ export default async function HomePage() {
           <Link className="secondary-button text-center font-semibold" href="/search">
             Search beans
           </Link>
-          <Link className="secondary-button text-center font-semibold" href="/grinders/new">
+          <Link className="secondary-button text-center font-semibold" href="/grinders">
             Add grinder
           </Link>
         </div>

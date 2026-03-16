@@ -23,3 +23,5 @@ export const grindSettingSchema = z.object({
 export const grinderSchema = z.object({
   name: z.string().trim().min(1, "Grinder name is required."),
 });
+
+export const idSchema = z.coerce.number().int().positive();

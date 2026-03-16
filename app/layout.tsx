@@ -33,6 +33,9 @@ export default function RootLayout({
                 <Link className="secondary-button" href="/beans/new">
                   Add bean
                 </Link>
+                <Link className="secondary-button" href="/grinders">
+                  Grinders
+                </Link>
                 <Link className="secondary-button" href="/search">
                   Search
                 </Link>

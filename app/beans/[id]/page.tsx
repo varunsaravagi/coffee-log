@@ -2,9 +2,10 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import { ChangeLogList } from "@/components/change-log-list";
 import { GrindSettingForm } from "@/components/grind-setting-form";
-import { getBeanBag, getGrinders } from "@/lib/queries";
-import { formatDate, formatMoney } from "@/lib/utils";
+import { getBeanBag, getBeanChangeLog, getGrinders } from "@/lib/queries";
+import { formatDate, formatDateTime, formatMoney } from "@/lib/utils";
 
 export default async function BeanDetailPage({
   params,
@@ -12,7 +13,11 @@ export default async function BeanDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const [bean, grinders] = await Promise.all([getBeanBag(Number(id)), getGrinders()]);
+  const [bean, grinders, changeLog] = await Promise.all([
+    getBeanBag(Number(id)),
+    getGrinders(),
+    getBeanChangeLog(Number(id)),
+  ]);
 
   if (!bean) {
     notFound();
@@ -42,9 +47,14 @@ export default async function BeanDetailPage({
               <p className="text-xs font-bold uppercase tracking-[0.25em] text-[var(--muted)]">{bean.brand}</p>
               <h2 className="mt-2 text-3xl font-bold">{bean.beanName}</h2>
             </div>
-            <Link className="secondary-button text-sm font-semibold" href="/search">
-              Search all beans
-            </Link>
+            <div className="flex flex-wrap gap-2">
+              <Link className="secondary-button text-sm font-semibold" href={`/beans/${bean.id}/edit`}>
+                Edit bean
+              </Link>
+              <Link className="secondary-button text-sm font-semibold" href="/search">
+                Search all beans
+              </Link>
+            </div>
           </div>
           <p className="text-base leading-7 text-[var(--muted)]">{bean.flavorProfile}</p>
           <dl className="grid gap-4 sm:grid-cols-3">
@@ -63,6 +73,14 @@ export default async function BeanDetailPage({
             <div className="rounded-[1.5rem] bg-[#f8f1e8] px-4 py-4">
               <dt className="text-xs font-bold uppercase tracking-[0.2em] text-[var(--muted)]">Price</dt>
               <dd className="mt-2 text-lg font-bold">{formatMoney(bean.price)}</dd>
+            </div>
+            <div className="rounded-[1.5rem] bg-[#f8f1e8] px-4 py-4">
+              <dt className="text-xs font-bold uppercase tracking-[0.2em] text-[var(--muted)]">Created</dt>
+              <dd className="mt-2 text-sm font-bold">{formatDateTime(bean.createdAt)}</dd>
+            </div>
+            <div className="rounded-[1.5rem] bg-[#f8f1e8] px-4 py-4">
+              <dt className="text-xs font-bold uppercase tracking-[0.2em] text-[var(--muted)]">Last updated</dt>
+              <dd className="mt-2 text-sm font-bold">{formatDateTime(bean.updatedAt)}</dd>
             </div>
           </dl>
         </div>
@@ -103,11 +121,19 @@ export default async function BeanDetailPage({
                   <div className="flex flex-wrap items-center justify-between gap-3">
                     <div>
                       <h4 className="text-lg font-bold">{setting.grinderName}</h4>
-                      <p className="text-sm text-[var(--muted)]">{formatDate(setting.createdAt)}</p>
+                      <p className="text-sm text-[var(--muted)]">{formatDateTime(setting.updatedAt)}</p>
                     </div>
-                    <span className="rounded-full bg-white px-3 py-1 text-sm font-bold text-[var(--accent)]">
-                      {setting.settingValue}
-                    </span>
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className="rounded-full bg-white px-3 py-1 text-sm font-bold text-[var(--accent)]">
+                        {setting.settingValue}
+                      </span>
+                      <Link
+                        className="text-sm font-semibold text-[var(--accent)]"
+                        href={`/beans/${bean.id}/settings/${setting.id}/edit`}
+                      >
+                        Edit
+                      </Link>
+                    </div>
                   </div>
                   {setting.notes ? (
                     <p className="mt-3 text-sm leading-6 text-[var(--muted)]">{setting.notes}</p>
@@ -119,6 +145,21 @@ export default async function BeanDetailPage({
                 No grind settings saved yet for this bag.
               </div>
             )}
+          </div>
+        </div>
+
+        <div className="rounded-[2rem] panel px-5 py-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-xs font-bold uppercase tracking-[0.35em] text-[var(--muted)]">Changelog</p>
+              <h3 className="mt-2 text-2xl font-bold">Updates for this bean</h3>
+            </div>
+            <span className="rounded-full bg-[#efe3d5] px-3 py-1 text-xs font-bold uppercase tracking-[0.18em] text-[var(--muted)]">
+              {changeLog.length} changes
+            </span>
+          </div>
+          <div className="mt-5">
+            <ChangeLogList entries={changeLog} />
           </div>
         </div>
       </section>

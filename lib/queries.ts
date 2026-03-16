@@ -1,7 +1,7 @@
 import { and, desc, eq, like, sql } from "drizzle-orm";
 
 import { db } from "@/lib/db";
-import { beanBags, grinders, grindSettings } from "@/lib/schema";
+import { beanBags, changeLogs, grinders, grindSettings } from "@/lib/schema";
 
 export async function getRecentBeans() {
   return db.query.beanBags.findMany({
@@ -66,5 +66,24 @@ export async function searchBeans(params: {
 export async function getGrinders() {
   return db.query.grinders.findMany({
     orderBy: [grinders.name],
+  });
+}
+
+export async function getGrinder(id: number) {
+  return db.query.grinders.findFirst({
+    where: eq(grinders.id, id),
+  });
+}
+
+export async function getGrindSetting(id: number) {
+  return db.query.grindSettings.findFirst({
+    where: eq(grindSettings.id, id),
+  });
+}
+
+export async function getBeanChangeLog(beanBagId: number) {
+  return db.query.changeLogs.findMany({
+    where: eq(changeLogs.beanBagId, beanBagId),
+    orderBy: [desc(changeLogs.changedAt)],
   });
 }

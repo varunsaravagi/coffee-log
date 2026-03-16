@@ -4,11 +4,24 @@ import { useActionState } from "react";
 
 import { createBeanBag, type FormState } from "@/app/actions";
 import { SubmitButton } from "@/components/submit-button";
+import type { BeanBag } from "@/lib/schema";
 
 const initialState: FormState = {};
 
-export function BeanBagForm() {
-  const [state, formAction] = useActionState(createBeanBag, initialState);
+type BeanBagFormProps = {
+  action?: (state: FormState, formData: FormData) => Promise<FormState>;
+  initialData?: BeanBag;
+  submitLabel?: string;
+  pendingLabel?: string;
+};
+
+export function BeanBagForm({
+  action = createBeanBag,
+  initialData,
+  submitLabel = "Save bean bag",
+  pendingLabel = "Saving bean bag...",
+}: BeanBagFormProps) {
+  const [state, formAction] = useActionState(action, initialState);
 
   return (
     <form action={formAction} className="space-y-5">
@@ -17,13 +30,25 @@ export function BeanBagForm() {
           <label className="label" htmlFor="brand">
             Brand
           </label>
-          <input className="field" id="brand" name="brand" placeholder="Sey, Onyx, local roaster..." />
+          <input
+            className="field"
+            defaultValue={initialData?.brand ?? ""}
+            id="brand"
+            name="brand"
+            placeholder="Sey, Onyx, local roaster..."
+          />
         </div>
         <div>
           <label className="label" htmlFor="beanName">
             Bean name
           </label>
-          <input className="field" id="beanName" name="beanName" placeholder="Colombia El Paraiso" />
+          <input
+            className="field"
+            defaultValue={initialData?.beanName ?? ""}
+            id="beanName"
+            name="beanName"
+            placeholder="Colombia El Paraiso"
+          />
         </div>
         <div>
           <label className="label" htmlFor="logDate">
@@ -31,7 +56,7 @@ export function BeanBagForm() {
           </label>
           <input
             className="field"
-            defaultValue={new Date().toISOString().slice(0, 10)}
+            defaultValue={initialData?.logDate ?? new Date().toISOString().slice(0, 10)}
             id="logDate"
             name="logDate"
             type="date"
@@ -41,13 +66,26 @@ export function BeanBagForm() {
           <label className="label" htmlFor="roastDate">
             Roast date
           </label>
-          <input className="field" id="roastDate" name="roastDate" type="date" />
+          <input
+            className="field"
+            defaultValue={initialData?.roastDate ?? ""}
+            id="roastDate"
+            name="roastDate"
+            type="date"
+          />
         </div>
         <div>
           <label className="label" htmlFor="bagQuantityGrams">
             Bag quantity (g)
           </label>
-          <input className="field" id="bagQuantityGrams" min="1" name="bagQuantityGrams" type="number" />
+          <input
+            className="field"
+            defaultValue={initialData?.bagQuantityGrams ?? ""}
+            id="bagQuantityGrams"
+            min="1"
+            name="bagQuantityGrams"
+            type="number"
+          />
         </div>
         <div className="md:col-span-2">
           <label className="label" htmlFor="flavorProfile">
@@ -55,6 +93,7 @@ export function BeanBagForm() {
           </label>
           <input
             className="field"
+            defaultValue={initialData?.flavorProfile ?? ""}
             id="flavorProfile"
             name="flavorProfile"
             placeholder="Berry jam, cocoa nibs, candied orange"
@@ -64,11 +103,19 @@ export function BeanBagForm() {
           <label className="label" htmlFor="price">
             Price (USD)
           </label>
-          <input className="field" id="price" min="0.01" name="price" step="0.01" type="number" />
+          <input
+            className="field"
+            defaultValue={initialData?.price ?? ""}
+            id="price"
+            min="0.01"
+            name="price"
+            step="0.01"
+            type="number"
+          />
         </div>
         <div>
           <label className="label" htmlFor="photo">
-            Bean bag photo
+            {initialData ? "Replace bean bag photo" : "Bean bag photo"}
           </label>
           <input
             accept="image/*"
@@ -86,7 +133,7 @@ export function BeanBagForm() {
         </p>
       ) : null}
       <div className="sticky bottom-4">
-        <SubmitButton label="Save bean bag" pendingLabel="Saving bean bag..." />
+        <SubmitButton label={submitLabel} pendingLabel={pendingLabel} />
       </div>
     </form>
   );
